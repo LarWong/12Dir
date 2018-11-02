@@ -48,20 +48,20 @@ int main(void) {
     }
 }
 
+
 void do_recursion(){
+    unsigned int size = 0;
     struct dirent * line;
     DIR *dir = opendir(".");
+    printf("files:\n");
     while ((line = readdir(dir))){
-        if (line->d_type == DT_DIR){
-            buffer[0][diri] = line->d_name;
-            diri++;
+        if (line->d_type == DT_REG){
+
         }
         else{
-            buffer[1][fili] = line->d_name;
-            fili++;
-            struct stat fileinfo;
-            stat(line->d_name, &fileinfo);
-            tot_bytes += fileinfo.st_size;
+
         }
     }
 }
+
+helper()
