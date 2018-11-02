@@ -6,7 +6,48 @@
 #include <sys/stat.h>
 #include <math.h>
 
-int main(void) {
+char * readify(unsigned int size){
+    char pref = 0;
+    long mult = 1;
+    char pref_ary[3] = "KMG";
+    for (int i = 1; i <= 3; i++){
+        if (size >= pow(1000,i)){
+            pref = pref_ary[i-1];
+            mult = pow(1000,i);
+        }
+    }
+    char * men = calloc(6,sizeof(char));
+    pref!=0 ? sprintf(men, "%ld%cB",size/mult,pref) : sprintf(men, "%ldB",size/mult);
+    return men;
+}
+
+
+
+unsigned int helper(int dir_level, char * dir_name){
+    unsigned int size = 0;
+    struct dirent * line;
+    DIR *dir = opendir(dir_name);
+    while ((line = readdir(dir))){
+        if (line->d_type == DT_DIR){
+            size += helper(dir_level++ , line->d_name);
+        }
+        else{
+            struct stat fileinfo;
+            stat(line->d_name, &fileinfo);
+            size += fileinfo.st_size;
+        }
+    }
+    return size;
+}
+
+void do_recursion(){
+    unsigned int size = 0;
+    printf("files:\n");
+    size = helper(1, ".");
+    printf("TOTAL SIZE: %s", readify(size));
+}
+
+void basic(){
     const char * buffer[2][99];
     int diri = 0;
     int fili = 0;
@@ -26,17 +67,7 @@ int main(void) {
             tot_bytes += fileinfo.st_size;
         }
     }
-    char pref = 0;
-    long mult = 1;
-    char pref_ary[3] = "KMG";
-    for (int i = 1; i <= 3; i++){
-        if (tot_bytes >= pow(1000,i)){
-            pref = pref_ary[i-1];
-            mult = pow(1000,i);
-        }
-    }
-    char * men = calloc(6,sizeof(char));
-    pref!=0 ? sprintf(men, "%lld%cB",tot_bytes/mult,pref) : sprintf(men, "%lldB",tot_bytes/mult);
+    char * men = readify(tot_bytes);
     printf("size: %s\n", men);
     printf("dirs:\n");
     for (int i = 0; i < diri; i++){
@@ -47,21 +78,8 @@ int main(void) {
         printf("\t%s\n",buffer[1][i]);
     }
 }
+int main(void) {
+    //basic();
+    do_recursion();
 
-
-void do_recursion(){
-    unsigned int size = 0;
-    struct dirent * line;
-    DIR *dir = opendir(".");
-    printf("files:\n");
-    while ((line = readdir(dir))){
-        if (line->d_type == DT_REG){
-
-        }
-        else{
-
-        }
-    }
 }
-
-helper()
