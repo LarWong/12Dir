@@ -7,10 +7,18 @@
 #IncludeRegexTransform: 
 
 /Users/jason/systems/12dir/dir.c
+stdio.h
+-
+stdlib.h
+-
 dirent.h
 -
 zconf.h
 -
 printf.h
+-
+sys/stat.h
+-
+math.h
 -
 
