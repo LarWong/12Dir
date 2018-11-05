@@ -80,16 +80,18 @@ void basic(DIR * dir){
 
 int main(int argc,char * argv[]) {
     if (argc < 2){
-        printf("\n\tPlease enter a dir, will print out current instead.\n");
+        printf("\nPlease enter a dir, will print out current instead.\n");
+        printf("Statistics for directory: %s\n",".");
         basic( opendir(".") );
     }else if (argc > 2){
         printf("\n\tYou have entered too many things. Will termanate Program.\n");
     }else{
-        printf("\n\tOpening Dir...\n");
+        printf("\nOpening Dir...\n");
         DIR * target = opendir(argv[1]);
         if (target == NULL){
-            printf("\tNo such Dir\n");
+            printf("\nNo such Dir\n");
         } else {
+            printf("Statistics for directory: %s\n",argv[1]);
             basic(target);
         }
     }
