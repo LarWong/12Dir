@@ -27,7 +27,8 @@ unsigned int helper(int dir_level, char * dir_name){
     unsigned int size = 0;
     struct dirent * line;
     DIR *dir = opendir(dir_name);
-    while ((line = readdir(dir))){
+    line = readdir(dir);
+    while (line){
         if (line->d_type == DT_DIR){
             size += helper(dir_level++ , line->d_name);
         }
@@ -36,6 +37,7 @@ unsigned int helper(int dir_level, char * dir_name){
             stat(line->d_name, &fileinfo);
             size += fileinfo.st_size;
         }
+        line = readdir(dir);
     }
     return size;
 }
@@ -53,7 +55,8 @@ void basic(DIR * dir){
     int fili = 0;
     unsigned int tot_bytes = 0;
     struct dirent * line;
-    while ((line = readdir(dir))){
+    line = readdir(dir);
+    while (line){
         if (line->d_type == DT_DIR){
             buffer[0][diri] = line->d_name;
             diri++;
@@ -65,6 +68,7 @@ void basic(DIR * dir){
             stat(line->d_name, &fileinfo);
             tot_bytes += fileinfo.st_size;
         }
+        line = readdir(dir);
     }
     char * men = readify(tot_bytes);
     printf("size: %s\n", men);
@@ -79,21 +83,25 @@ void basic(DIR * dir){
 }
 
 int main(int argc,char * argv[]) {
-    if (argc < 2){
-        printf("\nPlease enter a dir, will print out current instead.\n");
-        printf("Statistics for directory: %s\n",".");
-        basic( opendir(".") );
-    }else if (argc > 2){
-        printf("\n\tYou have entered too many things. Will terminate Program.\n");
-    }else{
-        printf("\nOpening Dir...\n");
-        DIR * target = opendir(argv[1]);
-        if (target == NULL){
-            printf("\nNo such Dir\n");
+    int boo = 20;
+    if (boo) {
+        if (argc < 2) {
+            printf("\nPlease enter a dir, will print out current instead.\n");
+            printf("Statistics for directory: %s\n", ".");
+            basic(opendir("."));
+        } else if (argc > 2) {
+            printf("\n\tYou have entered too many things. Will terminate Program.\n");
         } else {
-            printf("Statistics for directory: %s\n",argv[1]);
-            basic(target);
+            printf("\nOpening Dir...\n");
+            DIR *target = opendir(argv[1]);
+            if (target == NULL) {
+                printf("\nNo such Dir\n");
+            } else {
+                printf("Statistics for directory: %s\n", argv[1]);
+                basic(target);
+            }
         }
     }
+    //do_recursion();
     return 0;
 }
