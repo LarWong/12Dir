@@ -47,13 +47,12 @@ void do_recursion(){
     printf("TOTAL SIZE: %s", readify(size));
 }
 
-void basic(){
+void basic(DIR * dir){
     const char * buffer[2][99];
     int diri = 0;
     int fili = 0;
     unsigned int tot_bytes = 0;
     struct dirent * line;
-    DIR *dir = opendir(".");
     while ((line = readdir(dir))){
         if (line->d_type == DT_DIR){
             buffer[0][diri] = line->d_name;
@@ -78,8 +77,21 @@ void basic(){
         printf("\t%s\n",buffer[1][i]);
     }
 }
-int main(void) {
-    //basic();
-    do_recursion();
 
+int main(int argc,char * argv[]) {
+    if (argc < 2){
+        printf("\n\tYou have not entered a dir. Will print out current\n");
+        basic( opendir(".") );
+    }else if (argc > 2){
+        printf("\n\tYou have entered too many things. Will termanate Program.\n");
+    }else{
+        printf("\n\tOpening Dir...\n");
+        DIR * target = opendir(argv[1]);
+        if (target == NULL){
+            printf("\tNo such Dir\n");
+        } else {
+            basic(target);
+        }
+    }
+    return 0;
 }
