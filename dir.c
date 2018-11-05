@@ -80,7 +80,7 @@ void basic(DIR * dir){
 
 int main(int argc,char * argv[]) {
     if (argc < 2){
-        printf("\n\tYou have not entered a dir. Will print out current\n");
+        printf("\n\tPlease enter a dir, will print out current instead.\n");
         basic( opendir(".") );
     }else if (argc > 2){
         printf("\n\tYou have entered too many things. Will termanate Program.\n");
