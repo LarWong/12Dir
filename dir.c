@@ -96,7 +96,7 @@ void basic(DIR * dir){
 }
 
 int main(int argc,char * argv[]) {
-    int boo = 1;
+    int boo = 10;
     if (boo) {
         if (argc < 2) {
             printf("\nPlease enter a dir, will print out current instead.\n");
