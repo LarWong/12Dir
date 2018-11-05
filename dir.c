@@ -5,6 +5,8 @@
 #include <printf.h>
 #include <sys/stat.h>
 #include <math.h>
+#include <errno.h>
+#include <string.h>
 
 char * readify(unsigned int size){
     char pref = 0;
@@ -21,30 +23,42 @@ char * readify(unsigned int size){
     return men;
 }
 
-
+char * makeindent(int x){
+    char * store = malloc(99);
+    for (int i = 0; i < x; i++){
+        strcat(store,"\t");
+    }
+    return store;
+}
 
 unsigned int helper(int dir_level, char * dir_name){
+    const char * buffer[99];
+    int fili = 0;
     unsigned int size = 0;
     struct dirent * line;
     DIR *dir = opendir(dir_name);
-    line = readdir(dir);
-    while (line){
-        if (line->d_type == DT_DIR){
-            size += helper(dir_level++ , line->d_name);
+    //printf("%s",strerror(errno));
+    while ((line = readdir(dir))){
+        if (line->d_type == DT_DIR && strcmp(".", line->d_name) != 0 && strcmp("..", line->d_name) != 0 && strcmp("cmake-build-debug", line->d_name) != 0){
+            size += helper(dir_level+1 , line->d_name);
         }
-        else{
+        else if (line->d_type == DT_REG){
+            buffer[fili] = line->d_name;
+            fili++;
             struct stat fileinfo;
             stat(line->d_name, &fileinfo);
             size += fileinfo.st_size;
         }
-        line = readdir(dir);
+    }
+    printf("%sdir %s :\n",makeindent(dir_level-1),dir_name);
+    for (int i = 0; i < fili; i++){
+        printf("%s%s\n",makeindent(dir_level), buffer[i]);
     }
     return size;
 }
 
 void do_recursion(){
     unsigned int size = 0;
-    printf("files:\n");
     size = helper(1, ".");
     printf("TOTAL SIZE: %s", readify(size));
 }
@@ -55,8 +69,7 @@ void basic(DIR * dir){
     int fili = 0;
     unsigned int tot_bytes = 0;
     struct dirent * line;
-    line = readdir(dir);
-    while (line){
+    while ((line = readdir(dir))){
         if (line->d_type == DT_DIR){
             buffer[0][diri] = line->d_name;
             diri++;
@@ -68,7 +81,7 @@ void basic(DIR * dir){
             stat(line->d_name, &fileinfo);
             tot_bytes += fileinfo.st_size;
         }
-        line = readdir(dir);
+
     }
     char * men = readify(tot_bytes);
     printf("size: %s\n", men);
@@ -83,7 +96,7 @@ void basic(DIR * dir){
 }
 
 int main(int argc,char * argv[]) {
-    int boo = 20;
+    int boo = 1;
     if (boo) {
         if (argc < 2) {
             printf("\nPlease enter a dir, will print out current instead.\n");
@@ -102,6 +115,8 @@ int main(int argc,char * argv[]) {
             }
         }
     }
-    //do_recursion();
+    else {
+        do_recursion();
+    }
     return 0;
 }
