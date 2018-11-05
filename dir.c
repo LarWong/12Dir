@@ -84,7 +84,7 @@ int main(int argc,char * argv[]) {
         printf("Statistics for directory: %s\n",".");
         basic( opendir(".") );
     }else if (argc > 2){
-        printf("\n\tYou have entered too many things. Will termanate Program.\n");
+        printf("\n\tYou have entered too many things. Will terminate Program.\n");
     }else{
         printf("\nOpening Dir...\n");
         DIR * target = opendir(argv[1]);
